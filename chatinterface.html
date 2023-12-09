@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Chat App</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <link rel="stylesheet" type="text/css" href="style1.css">
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/lib/languages/python.min.js"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/a11y-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+</head>
+
+<body>
+    
+  <div class="container mt-5">
+    <h1 style="color:white">Chat Bot</h1>
+    <div class="chat-box mt-3">
+      <!-- Chat messages will be added here dynamically -->
+    </div>
+    <div class="form-group mt-3">
+      <textarea class="form-control" rows="3" placeholder="Type your message here" id="message-input"></textarea>
+    </div>
+    <button type="button" class="btn btn-primary" id="send-btn">Send</button>
+  </div>
+  <script>
+setInterval(highlightAll,1000);
+// Function to highlight code using highlight.js library
+function highlightAll() {
+  document.querySelectorAll("pre code").forEach(block => {
+    hljs.highlightBlock(block);
+  });
+}
+
+    const chatBox = document.querySelector(".chat-box");
+    const messageInput = document.querySelector("#message-input");
+    const sendBtn = document.querySelector("#send-btn");
+
+    function addMessage(message, isUserMessage) {
+      const messageDiv = document.createElement("div");
+      messageDiv.classList.add("mt-3", "p-3", "rounded");
+
+      if (isUserMessage) {
+        messageDiv.classList.add("user-message");
+
+      } else {
+        messageDiv.classList.add("bot-message");
+      }
+
+      messageDiv.innerHTML = `
+        <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAJQA2QMBIgACEQEDEQH/xAAbAAABBQEBAAAAAAAAAAAAAAACAAEDBAUGB//EADcQAAIBAwMCBAUCBAYDAQAAAAECAwAEEQUSITFBBhMiURQyYXGBocFCUpGxByMzktHwFSThQ//EABkBAQEBAQEBAAAAAAAAAAAAAAIDAQQABf/EACYRAAICAQMDBAMBAAAAAAAAAAABAhEDEiExBCJBMlFhcRNCgTP/2gAMAwEAAhEDEQA/APHwKMLSAowK+tRxNghaLFPT4raDY2KcCnAogK2jLGApwOacCjAwM9qVBsECjVGZgoXcx6CrVnPp29YJjLvkyrMFGE9iOea0tEt9Ikv3S7u4sJyoJwrDpyf2pUvcNv2OcNwF4jD7s4B7A0drNIrZXkbvW38QrZ1SCxutRdtL+LktIkYsoA2bunpz0GcZzXORxSqjSIjqG4TJ6n96jOTReMYtG49wnkgRn1fxFiTk/wDH4pJBBeSxRiZXlAJZtuPt+9YUi38OGbzFGM56Cjju5YJEmxyRg0VkvlHvxbdrNa/PwNx5M3lSZPCLz+alEMflCKSRkY87G4P+0fvVeHVYYCsrxrvxy+BuJ96vaTr2nWCyzsjmR85xyc/SqJq93sTcZJVRAun6lGpFuGePbkKYzg/1qu9tKgIuYjE/1UjFa8WsnUAWG6NV9RORwO2TR3ZjvLcMHLOw3Ro7c/j6VRaXwSbkuUc1Im01GRWnf2yx+WyEFWUcZ5B9jVCRCrEGjKJSMrIiKAipcUJFAaZFQsKkK0xFYOyIihxUhFNiixpkZpqIihrBF0U+KQogKqczYgKICkKIVtBsbFEKQGaMCkFsECpoUDP6s7QOcDJoQKF5TCyESGMk4LDrjvWukYu50BHFcX14IdOsS8zDaiICzHHOfp1qxf6VISXlQwmJBlHTr0/28nvW3p+vHw5asdCO4XEQSecw5eIjnh8+x6dqpaRM9zeNBaiZ4p3LlpHHpbn1bj+9BRt6ZFpSpKSJEsZHW2t7uTNySQvw8QaQ5Awz56jgY79aVhZpJKkRkhjvNoHmynduYj08Hsfemi8pr+OO7ebDAlUXcjhwevHJGOeP6cV2dpaaVbC4iuLW7aSDbMZIUBMykelkbuOv145ptRJ6pNHNyaVviaSeLd5A3Snynfj+mOo965LVrZjqMlvCvpDAfLgLkZx36V6bofjvQdG+IWaDVJhOwKu0QJbGfcj37V0FjPpPjFLjULe0lSIOI8TxgNkAex6c1PLLU68DwxcI2+TwhrOV32McberdhRvpj7c28onx2UEEfivZbvwtbxM6pEuD7Cufu/B0SHfCmw9fTUvwx8FVkkefWhniTYB6erd/0q2ZX2iW5Zl9sH1t+a6Y+G73zCsUaHJ6kDNY17pNxaXWdTjkHPD9QaWloLdtuiOWWYKGaNcMdwDDoMdaiu4VAR4m3Iw445qS8Mcn+a00TMwwAjEn8+1A0oeAEZwBhc+1Wi75INNUUyKE1JimIrKEmRkUDCpDQkUWhpkJpsVIwocUWNMjYUGKlIpsCiOy2BRClRAVVHNYwFGBSAosUkgNiAosUgKcUgtjgYptRWGPRvNlg3TSXAWGXf8AKFGWGO/UUQFW4b7TvhzY6vZefEFla3lWYxtHKwXnrg42jg/Wp5VcaKYX3WZzLNHZSXVg8qrBLi4VcbQGHBx9elTaPrHkXCW/w29S3EeAMHtjH061UvoUe/lW3uFkhWNGkdPlGcbvvg1Xt7Z4brz4g8scXqZ4uw55+lc2qcZ3E6XCMoVI9H/8Q9/YT3NjcW6wyASPI7YIPAA4G4L398gg/XtPDdlJBo6afcwFkt0C75BkOh+4/SuG/wAP7yCW8SzYss/wuwhh6ZgGJVh9VY/0zXbyQX72kMi6j8QyykSxo78KR6VxuGCG7nPBrqlLY5tNOgr/AE3R7EmaS0iIIIwdoHHbLHp9uP0q9ocNpbwzrZQGOJpN3DDa3A5GP+/cdcLVbFNRsotPvxNOCTJCobErR8YYr1AyQCOufpgjT8I2ElhYNaG3khhjbESuc8YHfqec9cUJN6eRxq+DdSOORhvXIpriC1CfIM/Sn8th7iobhXKVPyUKBhiDkrWbrlpBcWjpKitx7VebchOao6g5KEDqaogs8fuNBvr3VJ49FtJbjCmQxxjOAOufYdas61BHBdqICDBJBHLER/Kygj+5H4rtNL0uFLC/vZ5Li3lnu0tllhkK+hm9YGOD3+1cn4oNp/5eSPT8/CwokUWTn0qoFNQpslPJaSZiEUJqU0BrTEyMihNSGgNFoSYBGaBhUhFMaLRRMhNDUjChotDTLgFGBTCiFWRzMfFOKQohW0BiApxSFGKQbF2qjrCH4ZHH8LVoAVYstLk1y1xatGUeZYGJb/SYnALDqBnvU8sU4uPljxNqWrwjnCCS3lkncnUf1NTxBgSik7G/1Chz37/8UMltPYX8tpMIma2maM55UnOD9xxU6KV3SYMSyJtIH8Pvx7Z4/FcsHe53yrgvRyvBuCF/Mj9Kf5Z3KDyWByMHP4Oa6zQ9fS2S3guL27tLvDRPcEIY5MtuUuxyBt5GcjGa5u28QXIkyZ44FUYQvBvZ/vxR3PiO8uJV3zWz7OVDxBQ30xj8fmuhSjVI53GTds9WtNSs7IznXrlfNacLEl0ixlFwOTsHJPBzwMY4rd0vVLe7R5YtWj1BN5GQqKYyOxCgffn3rw+LVLWee28+zit0JVWEckhxtBweT7kV23hS9eS71OOCIoIn8p127TuGc5FT0pspuj04SxMuSy1DNJEV4xXmOo+L7qzkaFIi7r2zWBe/4gayHCxm3iz2PJouKT5N3fg9elhMgOxQftWLq0TQQtJjlRXmsHjHW5JApvolY9AXINdFpniTUbwrZX6JLDKCvm5yVOKcWvAZJo4vXNTu71gHnuFtPieUQnanJBOPfNVpfmPOeetdNbXdqbbVtBiS5mvbq5b4eCMHa207ifbjBP4rL1jQb/RxCdQiWMzLvUBwSB9R2q0a9yGS9lRkkUJFEetNSJkRoalIoCKLKJkZFCaM0JoMSI2GaDbUppsUR2WxRAUIohVkc7HogKYCjApILEKMUIHNGtaBjqOfvVLT5rjTZCVOxLhmjySVDc7SCfbGKvr9ajlNklhqMM+nPcXEyh4LkOcWoBG4kDrngfmo506tcl+nkrcWZ+34kuXd9x3eYMhiCDyRSnVt4WJ2YHsBjP4+1DCbeyAZt7TK25WRsKUK9/Y5wcY9wa17m2tdyzw72dkyidxzzyOvb/uKhdx+Trfa/gpaPZ/EPL8SQqMCOWCkN2PPUftV7UtHtIrdvkikOCgMynHJJ6dR2H2poIJb+WXdL5UpUENCMb+39TXYaVomm2e6XVbjULgou1h8PuQAjueff3qqTjFNok53J09zz6Kzmt3XzZAiMhZMAnf9iPv1r3nwT4dh0e2ubd3kmkbEjNLjK5GNox2yCfzXnWpaZFDNaS2nnTWMXqRniKmNMndkfT0AY/avVfClyLq0nk+JFxGh8uN8hicZ6kd6nJVCxKVypnmWt+ENTvtX1C6iIFoGOFD4Yj2GeKoaV4MtJNPJuZlS8DsJFWROEIIUrk4JBxwSK9aBhlkeM9+tU73SLSfKyRhGHRkGOPxWpRu2JyZ57q3hKGHTke2uYXnMmXjLbxs2gAenOGJ54PGfpUWi6Lf2kkbzBgFOcmvQYNHtoHD7WkZR6SzE4/rVmeFEiyygfiktKYXdHFaCthBf6ncABNXUvFCo5wrlVMg44+bHXuayf8QtPbTPEt8kszXEkzpIZmGOCg9OPYVL4/0qQzxanbS7SJ1jKKcN6lGCD9CtZviyW+e/hj1O5FzcxW6K8v8AMcd/rjFJd2X6JS7cX2YBHNDUh5oDVSCBNAwqSgIrBIiNMRRkUJoMoiM0NGaGiItiioRRCrEGEKIUwogK1AY9GooaNaQWEKiuAVBkWPzPQVK98GpaIHFZJWqMhLS7Ma58h74CCNUtwMxxkckdwT7/AHq9a3EDobW43CMPlST0HIFPcWkC5nCYdSGyp+tVYmSK4bcu9t2JFcfMpNcsouB3xmsitG/DcKZgsaQqxzufaHk46EZ4H0JqzLLrW/4mz+GaVRiaW5KMfpxjjgVzIdYJpCsbFCcqOjAf81rxzSXcMlot3JbwJ6gs6g+a2AOx68dTnrS1JxryHS1JPwa9hdahPYz3Ekkctx5qeWkQyiDGOSOme36d69Q8CW07aJ5ktols0zebtEjN1A5Oeh4rwWG5urLfHHPLHcQvlWgk2HJ+orsvD3j/AFu0sURnSSNFwzSA7+Pf3oSlqjpKRx72eh3wFle7WOPMPB7Z9qv48yABj6h3FcR4Y8SX/i2+k025tuP9XzGXb5YHQjnPXA/NdmvmQgCUcrx96xNNCaoimnFqvOTXJ+KfFEdtbtg854xWxrd3iNz9eleZXytqWrJGfkDZNPgzk7rRbCC8sYtR1cyXMmBLHbRgkIB047t9Sa4LXLlb3Vbq4X5XkJAznjp+1SprGqW9rLYpfy+Q2VKjA9Ptnris01aEWt2cmbIpbIiIoSM1IaEimSTIyKEijIoTRKJkZFAakNARRY0RkU1EaagMsCiWmFEKqiLCFGKEUQpIDCFEKYUQrQMeiFMKIVoLIrsM1rKqdWU1mzeVqLo8X+VIsYDoeMkccfXpWzgEcjNVdTht3RpIWaO6WMk+n0v2A+/34qGWP7HV02RLYyoo2kAZ92GGFPXp1/NaIt2meDM4yvow0Y9AHcqc8Ec/p96kV4XhjhjjyM+raBuycAH/AL71p2VyIRIZf/ZCEqNy46cdiD+OlQVNfJ2O1yR32jyS+a4KyDIMTRbcP/Njb7cfr3qzaeHbyG8sEnEgSdwCM9M00PiW7QmOztZN2SchMnJ6n7n3rd07xRrqqqtp11Kw+QyWwdgfoe1atBumbPSvDWiafoytLbWqRTSDEjgepvzWnfbXXctedx+IvGMPrfRr6aNuizKp/oQcipbTxDrFxMDeaVPZwMPmkx1/rmvJW7MaaRZ8USiJDnHNcjpcfqe4brzitbxHcm8kRFOfese5uBBD5cfzHiqpE26TZlScsT7kmgNSMKA1c+ddgEUBqQ0Brw0AelRmpTQNQGiM0BFSGgbpWMoiI01EaagUROKMUAoxVERYYohQiiFIDDFFQinpADFEKEUVeAwhWNrE0kN4hjY4KDcAevJrYBrI1KTbqK5wU2AEdzyajm9J0dL/AKfweK337ZrYbnk9OwHBDGlGJLcFxhk3Y4bOD/3vVRLpor12/wDy+RlA6iriIxlNzHKgAYHYF4GTnBFc6epHa01yaNpqJgYOGCsOa1rbx1qER/8AXXeB38ljXP2QiecJ5ipj+Y5zwff7V3/gvUNN+GmwA6iTaC5VieB3AH9qaburN1bXRVg8d6jcoPPlRB7BTn9alufELXcXlxKXY9TXXG00i9U74IgT3wKwtXj03RoHlDIAOgHU/StigSlZy8kkiOXlHJ4UHqSewrJG9pHkl+Zj8vtSli1fVtSF4lqUjiYv5c0XpRf5jmjM4mllVduI5GAKjGQSTn9arjp8kOo2jSYJoCKM0JqrONAUJFGaA1gkAajIqQ0BosoiOhNFQ0SiIzQ0TUNEoicUYoBRCmiTJBRCgFEKQGSCnoBR1oAhRChFOK0LCrD1KYLeM4HqGFBzjHvWhe3ggBRPVMeAo7fesST/ADNzHJZTktnv7Vy9RkVVE7ukxNPUzTtIrZ2ZvMGCM7O/QVU+LDpKWVemOmM//aiv7d7fywXVyyggr9QDj9armJwNzcAnHJrneR8JHUsa5bNV9TjcSYtgqtnG3Ax9sDgCp9P1ARoUiiZPVuAUAA8D2rIjGRtPUVpWEYpxvkx1wbcWq6ieIGKk9Nxqvq/nubdri82sWyXY4C8VPbqFwTWVrZubkAxLmKMFjn61R2lfJPtujp73XdRv/DM8Mcsk9lAixk7MNN2yzDsDzj6c1i2iyxWsKXMLRzEc71IJGOP0xUmka5qNvZCae5SO1cGJVVBjIweQB/ei1Sdpr1bJJnmMLtEsrnLFtxYH8g4xVYzWzIZMbpxGNAaUbGQHIIkXh0+3U0xNWu9zjaadDGgNEaE1hqANAaM0DUWUQBoDRGhJolERtQ07U1BlETCiWnpU0TYQ6UQpUqaJsMUQpUq0DDFVb+Z4owIzgt37ilSo5PSUwq5qynZBRa3U5QNJsYKW/hPuPrVNVATy+xlH9qVKuKXCPorllmS3QSQjnnb3+1DdyMs7IAMB8dKVKqJdjM/Yrw/Mfua07ZiOlKlWQ4DPk0FYmMjNTKiuDkdR/csP2FKlXTiObOaE+k2i+HLtgrZhnkVDnsCn/NZlsQLp52UO0tx5TBumMZz9COxpUqykK2bvi2zhj0ay1ZARduo8xx/GQxGT9frWEPXB5h+YOV470qVeh6mTyLssjNAaelVZEERmgNNSoMogTQGmpUGUQBpqVKsZRH//2Q==" class="user-icon"><p>${message}</p>
+        `;
+
+      chatBox.appendChild(messageDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+
+
+
+    function sendMessage() {
+      const message = messageInput.value.trim();
+
+      if (message !== "") {
+        addMessage(message, true);
+
+        fetch("/api", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ message })
+        })
+          .then(response => response.json())
+          .then(data => {
+                      messageInput.value = "";
+            const messageDiv = document.createElement("div");
+            messageDiv.classList.add("mt-3", "p-3", "rounded");
+            messageDiv.classList.add("bot-message");
+
+            const content = data.content;
+
+            // Check if the content has code block
+            const hasCodeBlock = content.includes("```");
+            if (hasCodeBlock) {
+              // If the content has code block, wrap it in a <pre><code> element
+              const codeContent = content.replace(/```([\s\S]+?)```/g, '</p><pre><code>$1</code></pre><p>');
+
+
+              messageDiv.innerHTML = `<img src="{{ url_for('static', filename='images/gpt.jpg') }}" class="bot-icon"><p>${codeContent}</p>`
+
+            }
+            highlightAll();
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+          })
+          .catch(error => console.error(error));
+      }
+    }
+
+
+    sendBtn.addEventListener("click", sendMessage);
+    messageInput.addEventListener("keydown", event => {
+      if (event.keyCode === 13 && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage();
+      }
+    });
+  </script>
+</body>
+
+</html>

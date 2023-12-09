@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style1.css">
+  <title>Chat App</title>
+</head>
+<body>
+
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            Chat App
+          </div>
+          <div class="card-body" id="chat-container">
+            <!-- Chat messages will be displayed here -->
+          </div>
+          <div class="card-footer">
+            <div class="input-group">
+              <input type="text" id="messageInput" class="form-control" placeholder="Type your message...">
+              <div class="input-group-append">
+                <button class="btn btn-primary" onclick="sendMessage()">Send</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    function sendMessage() {
+      const messageInput = document.getElementById('messageInput');
+      const message = messageInput.value;
+
+      if (message.trim() === '') {
+        return;
+      }
+
+      // Simulating a POST request to '/api'
+      fetch('/api', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        displayMessage('User', message, 'user');
+        displayMessage('Response', data.response, 'response');
+      })
+      .catch(error => {
+        console.error('Error sending message:', error);
+      });
+
+      // Clear the input field
+      messageInput.value = '';
+    }
+
+    function displayMessage(sender, message, type) {
+      const chatContainer = document.getElementById('chat-container');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${type}`;
+      messageDiv.innerHTML = `<strong>${sender}:</strong> ${message}`;
+      chatContainer.appendChild(messageDiv);
+
+      // Scroll to the bottom of the chat container
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+  </script>
+</body>
+</html>

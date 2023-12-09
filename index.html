@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Page</title>
+ <link rel="stylesheet" href="style.css">
+</head>
+<body>
+ 
+   
+    
+  <div id="login-container">
+    
+    <h2>Login</h2>
+    <form id="login-form">
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" required>
+
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required>
+
+      <button type="button" onclick="performLogin()"><a href="chatinterface.html">Login</a></button>
+    </form>
+  </div>
+
+ 
+</body>
+<script>
+  
+  const apiKey ="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";
+  const apiUrl = 'https://api.openai.com/v1/engines/davinci-codex/completions'; // Replace with the appropriate endpoint
+
+  const prompt = 'Your user prompt here.';
+
+  fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+          prompt: prompt,
+          max_tokens: 150 // Adjust based on your needs
+      })
+  })
+  .then(response => response.json())
+  .then(data => {
+      console.log('API Response:', data);
+      // Process the AI response here
+      const aiResponse = data.choices[0].text;
+      console.log('AI Response:', aiResponse);
+  })
+  .catch(error => {
+      console.error('Error:', error);
+      // Handle errors here
+  });
+
+</script>
+
+
+<script>
+    function performLogin() {
+      var username = document.getElementById('username').value;
+      var password = document.getElementById('password').value;
+
+      // You can perform authentication logic here.
+      // For a simple example, let's just log the values to the console.
+      console.log('Username:', username);
+      console.log('Password:', password);
+    }
+
+</script>
+</html>
